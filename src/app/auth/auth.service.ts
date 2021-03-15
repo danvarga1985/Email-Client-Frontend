@@ -32,7 +32,7 @@ export interface AuthStatusResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private signedin$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private signedin$: BehaviorSubject<boolean> = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) { }
 
