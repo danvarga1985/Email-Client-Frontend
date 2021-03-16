@@ -28,11 +28,16 @@ export interface AuthStatusResponse {
   username: string,
 }
 
+export interface SigninResponse {
+  username: string,
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private signedin$: BehaviorSubject<boolean> = new BehaviorSubject(null);
+  username = '';
 
   constructor(private http: HttpClient) { }
 
@@ -50,20 +55,22 @@ export class AuthService {
     )
       .pipe(
         // An error will not reach 'tap'
-        tap(() => {
+        tap((response) => {
+          this.username = response.username;
           this.signedin$.next(true);
         })
       );
   }
 
   signInUser(credentials: SignInCredentials) {
-    return this.http.post(
+    return this.http.post<SigninResponse>(
       `${environment.API_URL}/auth/signin`,
       credentials
     )
       .pipe(
-        tap(() => {
+        tap(({ username }) => {
           this.signedin$.next(true);
+          this.username = username;
         })
       );
   }
@@ -85,7 +92,8 @@ export class AuthService {
       `${environment.API_URL}/auth/signedin`,
     )
       .pipe(
-        tap(({ authenticated }) => {
+        tap(({ authenticated, username }) => {
+          this.username = username;
           this.signedin$.next(authenticated);
         }),
       );

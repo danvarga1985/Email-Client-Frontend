@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Email } from '../model/email';
 import { EmailDetails } from '../model/email-details';
+import { OutgoingEmail } from '../model/outgoing-email';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,12 @@ export class EmailService {
 
   getEmailById(id: string): Observable<EmailDetails> {
     return this.http.get<EmailDetails>(`${environment.API_URL}/emails/${id}`);
+  }
+
+  sendEmail(emailToSend: OutgoingEmail) {
+    return this.http.post(
+      `${environment.API_URL}/emails`,
+      emailToSend
+    )
   }
 }
